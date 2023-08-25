@@ -16,10 +16,12 @@ public class BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String Id;
+    @Column(updatable = false,nullable = false)
     @CreationTimestamp
-    @JsonProperty("created_at")
+    @JsonProperty(value = "created_at",access = JsonProperty.Access.WRITE_ONLY)
     private Date CreatedAt;
+    @Column(nullable = false)
     @UpdateTimestamp
-    @JsonProperty("updated_at")
+    @JsonProperty(value = "updated_at",access = JsonProperty.Access.WRITE_ONLY)
     private Date UpdatedAt;
 }

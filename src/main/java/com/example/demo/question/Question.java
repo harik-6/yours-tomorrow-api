@@ -1,27 +1,30 @@
 package com.example.demo.question;
 
 import com.example.demo.BaseModel;
+import com.example.demo.enums.DifficultyEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "questions")
-@Getter
 @Setter
+@Getter
 public class Question extends BaseModel {
+    @Size(min = 10, max = 1000,message = "Invalid question")
     private String question;
-    @JsonProperty("correct_answer")
+    @NotEmpty
+    @JsonProperty(value = "correct_answer",access = JsonProperty.Access.WRITE_ONLY)
     private String correctAnswer;
     @ElementCollection(targetClass = String.class)
     private List<String> answers;
+    @NotEmpty
     private String subject;
-    private String difficulty;
-
-    public String getCorrectAnswer() {
-        return null;
-    }
+    @Enumerated(EnumType.STRING)
+    private DifficultyEnum difficulty;
 }
