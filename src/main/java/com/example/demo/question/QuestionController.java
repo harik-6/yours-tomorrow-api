@@ -26,11 +26,11 @@ public class QuestionController {
         return questionService.addNewQuestions(questions);
     }
 
-    @PutMapping("/{questionId}")
-    public Question putQuestino(@PathVariable("questionId") String questionId,@RequestBody Question question) {
-        question.setId(questionId);
-        return questionService.updateQuestion(question);
-    }
+//    @PutMapping("/{questionId}")
+//    public Question putQuestino(@PathVariable("questionId") String questionId,@RequestBody Question question) {
+//        question.setId(questionId);
+//        return questionService.updateQuestion(question);
+//    }
 
 
 }
