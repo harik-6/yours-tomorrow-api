@@ -1,6 +1,5 @@
-package com.example.demo.exam;
+package com.example.demo.models;
 
-import com.example.demo.BaseModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

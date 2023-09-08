@@ -1,6 +1,5 @@
-package com.example.demo.question;
+package com.example.demo.models;
 
-import com.example.demo.BaseModel;
 import com.example.demo.enums.DifficultyEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

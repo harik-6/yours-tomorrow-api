@@ -1,6 +1,5 @@
-package com.example.demo.user;
+package com.example.demo.models;
 
-import com.example.demo.BaseModel;
 import com.example.demo.enums.GenderEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
