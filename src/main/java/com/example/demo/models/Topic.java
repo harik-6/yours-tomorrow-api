@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "options")
+@Table(name = "topics")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Option extends IdEntity {
-    private String value;
+public class Topic extends IdEntity{
+    private String name;
 }

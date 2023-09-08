@@ -24,7 +24,7 @@ public class QuestionController {
     }
 
     @PostMapping("/multiple")
-    public Integer postMultipleQuestino(@RequestBody List<Question> questions) {
+    public List<Question> postMultipleQuestino(@RequestBody List<Question> questions) {
         return questionService.addNewQuestions(questions);
     }
 

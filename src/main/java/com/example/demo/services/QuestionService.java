@@ -9,14 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
-    @Autowired
-    private OptionsRepository optionsRepository;
 
     private void validateQuestion(Question question) {
         Option answer = question.getAnswer();
@@ -25,7 +24,7 @@ public class QuestionService {
                 return;
             }
         }
-        throw new BadRequestException("Answer is not present options");
+        throw new BadRequestException("answer is not present options");
     }
 
     public Question getQuestion(String questionId) {
@@ -49,11 +48,13 @@ public class QuestionService {
         return questionRepository.save(savedQuestion);
     }
 
-    public Integer addNewQuestions(List<Question> questions) {
+    @Transactional
+    public List<Question> addNewQuestions(List<Question> questions) {
+        List<Question> savedQuestions = new ArrayList<>(questions.size());
        for(Question q : questions) {
-           addNewQuestion(q);
+           savedQuestions.add(addNewQuestion(q));
        }
-       return questions.size();
+       return savedQuestions;
     }
 
 //    public Question updateQuestion(Question question) {
