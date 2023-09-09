@@ -3,19 +3,23 @@ package com.example.demo.services;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.models.Option;
 import com.example.demo.models.Question;
-import com.example.demo.repositories.OptionsRepository;
+import com.example.demo.models.Subject;
 import com.example.demo.repositories.QuestionRepository;
+import com.example.demo.repositories.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private SubjectRepository subjectRepository;
 
     private void validateQuestion(Question question) {
         Option answer = question.getAnswer();
@@ -35,8 +39,11 @@ public class QuestionService {
     public Question addNewQuestion(Question question) {
         validateQuestion(question);
         Option requestAnswer = question.getAnswer();
+        Subject requestSubject = question.getSubject();
         question.setAnswer(null);
-        // save the question without answer
+        question.setSubject(null);
+        question.setTopic(null);
+        // save the question without answer,subject and topic
         Question savedQuestion = questionRepository.save(question);
         // fetch the option and save again
         for(Option option: savedQuestion.getOptions()) {
@@ -45,6 +52,9 @@ public class QuestionService {
                 break;
             }
         }
+        // fetch is the same subject already present in subject table
+        Subject existingSubject =  subjectRepository.findByName(requestSubject.getName());
+        savedQuestion.setSubject(Objects.requireNonNullElse(existingSubject, requestSubject));
         return questionRepository.save(savedQuestion);
     }
 

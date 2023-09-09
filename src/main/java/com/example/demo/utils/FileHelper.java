@@ -73,7 +73,7 @@ public class FileHelper {
                     }
                     columnNumber+=1;
                 }
-                System.out.printf("question successfully parsed %s\n",question.getQuestion());
+//                System.out.printf("question successfully parsed %s\n",question.getQuestion());
                 question.setOptions(options);
                 questions.add(question);
             }
