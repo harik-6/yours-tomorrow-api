@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Question extends IdAndAuditEntity {
+    @JsonProperty("questions")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<QuestionPhrase> questionPhrases;
     @Enumerated(EnumType.STRING)

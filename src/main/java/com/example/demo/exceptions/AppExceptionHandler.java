@@ -12,6 +12,12 @@ public class AppExceptionHandler {
         return ResponseEntity.badRequest().body(exception);
     }
 
+    @ExceptionHandler(RecordNotFoundException.class)
+    protected ResponseEntity<AppException> handleNoRecordException(RecordNotFoundException ex){
+        AppException exception = new AppException(ex.getMessage().toLowerCase(),ex.getStatusCode());
+        return ResponseEntity.badRequest().body(exception);
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<AppException> handleOtherException(Exception ex){
         AppException exception = new AppException(ex.getMessage().toLowerCase(),500);

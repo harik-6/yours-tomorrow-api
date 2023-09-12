@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.exceptions.RecordNotFoundException;
 import com.example.demo.models.Exam;
 import com.example.demo.models.Question;
 import com.example.demo.services.ExamService;
@@ -21,6 +22,13 @@ public class ExamController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public Exam createExam(@RequestBody Exam exam) {
         return examService.createExam(exam);
+    }
+
+    @GetMapping("/{examId}")
+    public Exam getExam(@PathVariable("examId") String examId) {
+        Exam exam = examService.getExamById(examId);
+        if(exam == null) throw new RecordNotFoundException("no exams found for the id "+examId);
+        return exam;
     }
 
     @GetMapping("/{examId}/questions")
