@@ -5,31 +5,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "questions")
-@Setter
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Question extends IdAndAuditEntity {
-    @Size(min = 10, max = 1000,message = "Invalid question")
-    private String question;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<QuestionPhrase> questionPhrases;
     @Enumerated(EnumType.STRING)
     private DifficultyEnum difficulty;
     @NotEmpty
     @JsonProperty("options")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Option> options;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Option answer;
+    private List<Option> answers;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Subject subject;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

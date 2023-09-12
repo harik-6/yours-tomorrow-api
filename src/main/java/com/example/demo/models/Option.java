@@ -1,17 +1,17 @@
 package com.example.demo.models;
 
+import com.example.demo.enums.LanguageEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "options")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
+
 public class Option extends IdEntity {
     private String value;
+    @Enumerated(EnumType.STRING)
+    private LanguageEnum language;
 }

@@ -5,7 +5,7 @@ import com.example.demo.models.Exam;
 import com.example.demo.models.ExamQuestion;
 import com.example.demo.models.Question;
 import com.example.demo.repositories.ExamRepository;
-import com.example.demo.utils.FileHelper;
+import com.example.demo.utils.XlsxUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -59,7 +58,7 @@ public class ExamService {
         }
         System.out.printf("parsing file name %s for exam %s\n",file.getOriginalFilename(),exam.getName());
         // add questions to question table
-        List<Question> questions =  FileHelper.parseFileToQuestion(file.getInputStream());
+        List<Question> questions =  XlsxUtil.parseFileToQuestion(file.getInputStream());
         if(questions.isEmpty()) {
             throw new BadRequestException("question parsing failed");
         }

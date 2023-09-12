@@ -21,14 +21,22 @@ public class QuestionService {
     @Autowired
     private SubjectRepository subjectRepository;
 
+
     private void validateQuestion(Question question) {
-        Option answer = question.getAnswer();
-        for(Option options:question.getOptions()) {
-            if(options.getValue().equals(answer.getValue())) {
-                return;
-            }
-        }
-        throw new BadRequestException("answer is not present options");
+        System.out.println("number of question phrases present "+question.getQuestionPhrases().size());
+        List<Option> answers = question.getAnswers();
+        System.out.println("number of answers present "+answers.size());
+        int correctAnswers = 0;
+       for(Option answer:answers) {
+           System.out.println("answer "+answer.getValue());
+           for(Option options:question.getOptions()) {
+               System.out.println("option "+options.getValue());
+               if(options.getValue().equals(answer.getValue())) {
+                   correctAnswers+=1;
+               }
+           }
+       }
+       if(correctAnswers!=2) throw new BadRequestException("answers are not present options");
     }
 
     public Question getQuestion(String questionId) {
@@ -38,18 +46,20 @@ public class QuestionService {
     @Transactional
     public Question addNewQuestion(Question question) {
         validateQuestion(question);
-        Option requestAnswer = question.getAnswer();
+        List<Option> requestAnswers = question.getAnswers();
         Subject requestSubject = question.getSubject();
-        question.setAnswer(null);
+        question.setAnswers(null);
         question.setSubject(null);
         question.setTopic(null);
         // save the question without answer,subject and topic
         Question savedQuestion = questionRepository.save(question);
         // fetch the option and save again
-        for(Option option: savedQuestion.getOptions()) {
-            if(option.getValue().equals(requestAnswer.getValue())) {
-                savedQuestion.setAnswer(option);
-                break;
+        savedQuestion.setAnswers(new ArrayList<>());
+        for(Option answer:requestAnswers) {
+            for(Option option: savedQuestion.getOptions()) {
+                if(option.getValue().equals(answer.getValue())) {
+                    savedQuestion.getAnswers().add(option);
+                }
             }
         }
         // fetch is the same subject already present in subject table
