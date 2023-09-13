@@ -5,6 +5,7 @@ import com.example.demo.models.Exam;
 import com.example.demo.models.ExamQuestion;
 import com.example.demo.models.Question;
 import com.example.demo.repositories.ExamRepository;
+import com.example.demo.utils.ValidatorUtil;
 import com.example.demo.utils.XlsxUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,13 @@ public class ExamService {
     @Autowired
     private ExamQuestionService examQuestionService;
 
-    public Exam getExamById(String examId) {
+    public Exam getExam(String examId) {
         return examRepository.findById(examId).orElse(null);
     }
 
     public List<Question> getQuestionsByExamId(String examId) {
-        Exam exam = getExamById(examId);
-        if(exam == null) {
-            throw new BadRequestException("exam not found with id "+examId);
-        }
+        Exam exam = getExam(examId);
+        ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
         List<ExamQuestion> examQuestions = examQuestionService.getByExam(exam);
         List<Question> questions = new ArrayList<>(examQuestions.size());
         for(ExamQuestion examQuestion: examQuestions) {
@@ -52,10 +51,8 @@ public class ExamService {
 
     @Transactional
     public void addQuestionsToExam(String examId, MultipartFile file) throws IOException {
-        Exam exam = getExamById(examId);
-        if(exam == null) {
-            throw new BadRequestException("Exam not found with id "+examId);
-        }
+        Exam exam = getExam(examId);
+        ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
         System.out.printf("parsing file name %s for exam %s\n",file.getOriginalFilename(),exam.getName());
         // add questions to question table
         List<Question> questions =  XlsxUtil.parseFileToQuestion(file.getInputStream());

@@ -16,6 +16,14 @@ public class ExamQuestionService {
     @Autowired
     private ExamQuestionRepository examQuestionRepository;
 
+    public ExamQuestion getExamQuestion(String examQuestionId) {
+        return examQuestionRepository.findById(examQuestionId).orElse(null);
+    }
+
+    public ExamQuestion getExamQuestion(String examId, String questionId) {
+        return examQuestionRepository.findByExamIdAndQuestionId(examId, questionId).orElse(null);
+    }
+
     public List<ExamQuestion> getByExam(Exam exam) {
         return examQuestionRepository.findByExamId(exam);
     }

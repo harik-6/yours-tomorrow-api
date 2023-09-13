@@ -3,7 +3,9 @@ package com.example.demo.controllers;
 import com.example.demo.exceptions.RecordNotFoundException;
 import com.example.demo.models.Exam;
 import com.example.demo.models.Question;
+import com.example.demo.models.UserExam;
 import com.example.demo.services.ExamService;
+import com.example.demo.services.UserExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.List;
 public class ExamController {
     @Autowired
     private ExamService examService;
+    @Autowired
+    private UserExamService userExamService;
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -26,7 +30,7 @@ public class ExamController {
 
     @GetMapping("/{examId}")
     public Exam getExam(@PathVariable("examId") String examId) {
-        Exam exam = examService.getExamById(examId);
+        Exam exam = examService.getExam(examId);
         if(exam == null) throw new RecordNotFoundException("no exams found for the id "+examId);
         return exam;
     }
@@ -45,5 +49,10 @@ public class ExamController {
         }catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @PostMapping("/{examId}/join/{userId}")
+    public UserExam join(@PathVariable("examId") String examId, @PathVariable("userId") String userId) {
+        return userExamService.joinExam(examId, userId);
     }
 }

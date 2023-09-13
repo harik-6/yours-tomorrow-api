@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import com.example.demo.enums.LanguageEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,4 +19,9 @@ public class QuestionPhrase extends IdEntity {
     private String value;
     @Enumerated(EnumType.STRING)
     private LanguageEnum language;
+    @JsonIgnore
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 }
