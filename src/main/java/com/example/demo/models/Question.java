@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import com.example.demo.enums.DifficultyEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,10 +26,13 @@ public class Question extends IdAndAuditEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Option> options;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Option> answers;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Subject subject;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Topic topic;
+    @JsonIgnore
+    public List<Option> getAnswers() {
+        return answers;
+    }
 }

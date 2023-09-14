@@ -4,6 +4,7 @@ import com.example.demo.exceptions.RecordNotFoundException;
 import com.example.demo.models.Exam;
 import com.example.demo.models.Question;
 import com.example.demo.models.UserExam;
+import com.example.demo.services.ExamQuestionService;
 import com.example.demo.services.ExamService;
 import com.example.demo.services.UserExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class ExamController {
     private ExamService examService;
     @Autowired
     private UserExamService userExamService;
+    @Autowired
+    private ExamQuestionService examQuestionService;
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -37,7 +40,7 @@ public class ExamController {
 
     @GetMapping("/{examId}/questions")
     public List<Question> getQuestionsForAnExam(@PathVariable("examId") String examId) {
-        return examService.getQuestionsByExamId(examId);
+        return examQuestionService.getQuestionsByExamId(examId);
     }
 
 
@@ -45,14 +48,21 @@ public class ExamController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public void uploadQuestionsToExam(@PathVariable("examId") String examId, @RequestParam("file") MultipartFile file)  {
         try {
-            examService.addQuestionsToExam(examId, file);
+            examQuestionService.addQuestionsToExamFromFile(examId, file);
         }catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    @PostMapping("/{examId}/join/{userId}")
-    public UserExam join(@PathVariable("examId") String examId, @PathVariable("userId") String userId) {
-        return userExamService.joinExam(examId, userId);
+    @DeleteMapping("/{examId}/add/question/{questionId}")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public void addQuestionToAnExam(@PathVariable("examId") String examId, @PathVariable("questionId") String questionId) {
+        examQuestionService.removeQuestionFromExam(examId, questionId);
+    }
+
+    @DeleteMapping("/{examId}/remove/question/{questionId}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void removeQuestionFromExam(@PathVariable("examId") String examId, @PathVariable("questionId") String questionId) {
+        examQuestionService.removeQuestionFromExam(examId, questionId);
     }
 }

@@ -19,20 +19,20 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public Question postQuestino(@RequestBody Question question) {
+    public Question addNewQuestion(@RequestBody Question question) {
         return questionService.addNewQuestion(question);
     }
 
     @PostMapping("/multiple")
-    public List<Question> postMultipleQuestino(@RequestBody List<Question> questions) {
-        return questionService.addNewQuestions(questions);
+    public List<Question> postMultipleQuestions(@RequestBody List<Question> questions) {
+        return questionService.addNewQuestionList(questions);
     }
 
-//    @PutMapping("/{questionId}")
-//    public Question putQuestino(@PathVariable("questionId") String questionId,@RequestBody Question question) {
-//        question.setId(questionId);
-//        return questionService.updateQuestion(question);
-//    }
+    @PutMapping("/{questionId}")
+    public Question updateQuestion(@PathVariable("questionId") String questionId,@RequestBody Question question) {
+        //@Todo need to implement update question
+        throw new RuntimeException("not implemented");
+    }
 
 
 }

@@ -23,9 +23,8 @@ public class QuestionService {
 
 
     private void validateQuestion(Question question) {
-        System.out.println("number of question phrases present "+question.getQuestionPhrases().size());
         List<Option> answers = question.getAnswers();
-        System.out.println("number of answers present "+answers.size());
+        if(answers.isEmpty()) throw new BadRequestException("answers are not present");
         int correctAnswers = 0;
        for(Option answer:answers) {
            System.out.println("answer "+answer.getValue());
@@ -69,7 +68,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public List<Question> addNewQuestions(List<Question> questions) {
+    public List<Question> addNewQuestionList(List<Question> questions) {
         List<Question> savedQuestions = new ArrayList<>(questions.size());
        for(Question q : questions) {
            savedQuestions.add(addNewQuestion(q));
@@ -77,10 +76,11 @@ public class QuestionService {
        return savedQuestions;
     }
 
-//    public Question updateQuestion(Question question) {
-//        if(getQuestion(question.getId()) == null)
-//            throw new BadRequestException("Question with id " + question.getId() + " does not exist");
-//        validateAnswers(question);
-//        return questionRepository.save(question);
-//    }
+    public Question updateQuestion(Question questionToUpdate) {
+        Question existingQuestion = getQuestion(questionToUpdate.getId());
+        // update question database
+        // update question phrases db
+        // update options database
+        return questionRepository.save(existingQuestion);
+    }
 }

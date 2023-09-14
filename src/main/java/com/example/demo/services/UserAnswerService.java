@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserAnswerService {
     @Autowired
@@ -33,10 +35,21 @@ public class UserAnswerService {
         // check if question part of exam
         ExamQuestion examQuestion = examQuestionService.getExamQuestion(examId, questionId);
         ValidatorUtil.validateDbRecord(examQuestion,String.format("question %s is not part of exam %s",questionId,examId));
-        Option answerOptionByUser = optionService.getOption(answerSubmissionDto.getAnswerId());
-        ValidatorUtil.validateDbRecord(answerOptionByUser,String.format("option %s is not part of question %s",answerId,questionId));
+        boolean validAnswerId = false;
+        Option answerByUser = null;
+        List<Option> availableAnswers = examQuestion.getQuestion().getOptions();
+        for(Option option:availableAnswers){
+            if(option.getId().equals(answerId)){
+                validAnswerId = true;
+                answerByUser = option;
+                break;
+            }
+        }
+        if(!validAnswerId){
+            throw new BadRequestException(String.format("user answer %s is not part of question %s",answerId,questionId));
+        }
         UserAnswer answer = new UserAnswer();
-        answer.setAnswer(answerOptionByUser);
+        answer.setAnswer(answerByUser);
         answer.setUserExam(userExam);
         answer.setExamQuestion(examQuestion);
         // @Todo: check if user has already answered this question and update

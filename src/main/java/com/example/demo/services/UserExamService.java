@@ -13,22 +13,13 @@ public class UserExamService {
     @Autowired
     private UserExamRepository userExamRepository;
     @Autowired
-    private UserService userService;
-    @Autowired
     private ExamService examService;
-
-    public UserExam getUserExam(String userExamId) {
-        return userExamRepository.findById(userExamId).orElse(null);
-    }
 
     public UserExam getUserExam(String userId, String examId) {
         return userExamRepository.findByUserIdAndExamId(userId, examId).orElse(null);
     }
 
-    public UserExam joinExam(String examId, String userId) {
-        // validate if user exists
-        User user = userService.getUser(userId);
-        ValidatorUtil.validateDbRecord(user,"user not found with id "+userId);
+    public UserExam registerNewUserToExam(User user,String examId) {
         // validate if exam exists
         Exam exam = examService.getExam(examId);
         ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
