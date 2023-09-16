@@ -18,7 +18,9 @@ public class Exam extends IdAndAuditEntity {
     @NotEmpty
     private String name;
     private String description;
+    @JsonProperty("start_time")
     private Date startTime;
+    @JsonProperty("end_time")
     private Date endTime;
     @JsonProperty("duration_in_minutes")
     private int durationInMinutes;

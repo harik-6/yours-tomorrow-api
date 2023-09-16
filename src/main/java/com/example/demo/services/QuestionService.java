@@ -27,9 +27,7 @@ public class QuestionService {
         if(answers.isEmpty()) throw new BadRequestException("answers are not present");
         int correctAnswers = 0;
        for(Option answer:answers) {
-           System.out.println("answer "+answer.getValue());
            for(Option options:question.getOptions()) {
-               System.out.println("option "+options.getValue());
                if(options.getValue().equals(answer.getValue())) {
                    correctAnswers+=1;
                }

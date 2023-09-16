@@ -3,10 +3,9 @@ package com.example.demo.controllers;
 import com.example.demo.exceptions.RecordNotFoundException;
 import com.example.demo.models.Exam;
 import com.example.demo.models.Question;
-import com.example.demo.models.UserExam;
+import com.example.demo.models.dtos.ExamDetailsDto;
 import com.example.demo.services.ExamQuestionService;
 import com.example.demo.services.ExamService;
-import com.example.demo.services.UserExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +20,12 @@ public class ExamController {
     @Autowired
     private ExamService examService;
     @Autowired
-    private UserExamService userExamService;
-    @Autowired
     private ExamQuestionService examQuestionService;
+
+    @GetMapping
+    public List<Exam> getAllExams() {
+        return examService.getAllExams();
+    }
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -33,14 +35,19 @@ public class ExamController {
 
     @GetMapping("/{examId}")
     public Exam getExam(@PathVariable("examId") String examId) {
-        Exam exam = examService.getExam(examId);
+        Exam exam = examService.getExamById(examId);
         if(exam == null) throw new RecordNotFoundException("no exams found for the id "+examId);
         return exam;
     }
 
     @GetMapping("/{examId}/questions")
-    public List<Question> getQuestionsForAnExam(@PathVariable("examId") String examId) {
+    public List<Question> getExamQuestions(@PathVariable("examId") String examId) {
         return examQuestionService.getQuestionsByExamId(examId);
+    }
+
+    @GetMapping("/{examId}/details")
+    public ExamDetailsDto getExamDetails(@PathVariable("examId") String examId) {
+        return examQuestionService.getExamDetailsByExamId(examId);
     }
 
 
@@ -54,10 +61,10 @@ public class ExamController {
         }
     }
 
-    @DeleteMapping("/{examId}/add/question/{questionId}")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public void addQuestionToAnExam(@PathVariable("examId") String examId, @PathVariable("questionId") String questionId) {
-        examQuestionService.removeQuestionFromExam(examId, questionId);
+    @DeleteMapping("/{examId}/delete-questions")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteAllQuestionsFromExam(@PathVariable("examId") String examId)  {
+        examQuestionService.deleteAllQuestionsByExamId(examId);
     }
 
     @DeleteMapping("/{examId}/remove/question/{questionId}")

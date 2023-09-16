@@ -21,7 +21,7 @@ public class UserExamService {
 
     public UserExam registerNewUserToExam(User user,String examId) {
         // validate if exam exists
-        Exam exam = examService.getExam(examId);
+        Exam exam = examService.getExamById(examId);
         ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
         UserExam userExam = new UserExam();
         userExam.setExam(exam);

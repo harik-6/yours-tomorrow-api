@@ -5,12 +5,18 @@ import com.example.demo.repositories.ExamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ExamService {
     @Autowired
     private ExamRepository examRepository;
 
-    public Exam getExam(String examId) {
+    public List<Exam> getAllExams() {
+        return examRepository.findAll();
+    }
+
+    public Exam getExamById(String examId) {
         return examRepository.findById(examId).orElse(null);
     }
 

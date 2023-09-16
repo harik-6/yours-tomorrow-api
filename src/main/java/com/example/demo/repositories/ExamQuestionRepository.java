@@ -19,7 +19,7 @@ public interface ExamQuestionRepository extends JpaRepository<ExamQuestion, Stri
     @Query(value = "select * from exam_questions where exam_id = ?1 and question_id = ?2",nativeQuery = true)
     Optional<ExamQuestion> findByExamIdAndQuestionId(String examId, String questionId);
 
-//    @Modifying
-//    @Query(value = "delete from exam_questions where exam_id = ?1 and question_id = ?2",nativeQuery = true)
-//    void deleteByExamIdQuestionId(String examId, String questionId);
+    @Modifying
+    @Query(value = "delete from exam_questions where exam_id = ?1",nativeQuery = true)
+    void removeAllQuestionIdForAnExamId(String examId);
 }

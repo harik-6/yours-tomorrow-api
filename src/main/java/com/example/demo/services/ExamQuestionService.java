@@ -4,6 +4,7 @@ import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.models.Exam;
 import com.example.demo.models.ExamQuestion;
 import com.example.demo.models.Question;
+import com.example.demo.models.dtos.ExamDetailsDto;
 import com.example.demo.repositories.ExamQuestionRepository;
 import com.example.demo.utils.ValidatorUtil;
 import com.example.demo.utils.XlsxUtil;
@@ -34,7 +35,7 @@ public class ExamQuestionService {
     }
 
     public List<Question> getQuestionsByExamId(String examId) {
-        Exam exam = examService.getExam(examId);
+        Exam exam = examService.getExamById(examId);
         ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
         List<ExamQuestion> examQuestions = getExamQuestionsByExam(exam);
         List<Question> questions = new ArrayList<>(examQuestions.size());
@@ -42,6 +43,12 @@ public class ExamQuestionService {
             questions.add(examQuestion.getQuestion());
         }
         return questions;
+    }
+
+    public ExamDetailsDto getExamDetailsByExamId(String examId) {
+        Exam exam = examService.getExamById(examId);
+        ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
+        return new ExamDetailsDto(exam,getQuestionsByExamId(examId));
     }
 
     @Transactional
@@ -56,25 +63,15 @@ public class ExamQuestionService {
         return examQuestionRepository.saveAll(examQuestions);
     }
 
-    public ExamQuestion addQuestionToAnExam(String examId,String questionId) {
-        Exam exam = examService.getExam(examId);
-        ValidatorUtil.validateDbRecord(exam, "no exam found for the id "+examId);
-        Question question = questionService.getQuestion(questionId);
-        ValidatorUtil.validateDbRecord(question, "no question found for the id "+questionId);
-        ExamQuestion examQuestion = new ExamQuestion();
-        examQuestion.setExam(exam);
-        examQuestion.setQuestion(question);
-        return examQuestionRepository.save(examQuestion);
-    }
     public void removeQuestionFromExam(String examId,String questionId) {
         ExamQuestion examQuestion = examQuestionRepository.findByExamIdAndQuestionId(examId, questionId).orElse(null);
         ValidatorUtil.validateDbRecord(examQuestion, "no exam question found for the exam id "+examId+" and question id "+questionId);
         examQuestionRepository.delete(examQuestion);
     }
 
-    @jakarta.transaction.Transactional
+    @Transactional
     public void addQuestionsToExamFromFile(String examId, MultipartFile file) throws IOException {
-        Exam exam = examService.getExam(examId);
+        Exam exam = examService.getExamById(examId);
         ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
         System.out.printf("parsing file name %s for exam %s\n",file.getOriginalFilename(),exam.getName());
         // add questions to question table
@@ -87,5 +84,13 @@ public class ExamQuestionService {
         System.out.println("total questions saved "+savedQuestions.size());
         // update exam to question mapping table
         addQuestionListToAnExam(exam,savedQuestions);
+    }
+
+    @Transactional
+    public void deleteAllQuestionsByExamId(String examId) {
+        Exam exam = examService.getExamById(examId);
+        ValidatorUtil.validateDbRecord(exam,"exam not found with id "+examId);
+        System.out.println("delete all questions from exam "+exam.getId());
+        examQuestionRepository.removeAllQuestionIdForAnExamId(examId);
     }
 }
